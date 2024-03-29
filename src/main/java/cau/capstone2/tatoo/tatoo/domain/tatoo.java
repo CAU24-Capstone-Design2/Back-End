@@ -1,5 +1,6 @@
 package cau.capstone2.tatoo.tatoo.domain;
 
+import cau.capstone2.tatoo.scar.domain.Scar;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,4 +22,8 @@ public class tatoo {
 
     //피부 tryon
     private String outputUri;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scar_id")
+    private Scar scar;
 }
