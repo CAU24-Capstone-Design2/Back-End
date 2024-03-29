@@ -1,4 +1,4 @@
-package cau.capstone2.tatoo.user;
+package cau.capstone2.tatoo.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
