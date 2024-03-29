@@ -1,6 +1,7 @@
 package cau.capstone2.tatoo.scar.domain;
 
 
+import cau.capstone2.tatoo.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,10 @@ public class Scar {
     private String scar_url;
 
     private String scar_seg_url;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public static Scar createScar(String scar_url, String scar_seg_url) {
         Scar scar = new Scar();
