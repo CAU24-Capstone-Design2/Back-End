@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class tatoo {
+public class Tatoo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tatoo_id")
