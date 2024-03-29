@@ -16,18 +16,18 @@ public class Scar {
     @Column(name = "scar_id")
     private Long id;
 
-    private String scar_url;
+    private String scarUri;
 
-    private String scar_seg_url;
+    private String scarSegUri;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public static Scar createScar(String scar_url, String scar_seg_url) {
+    public static Scar createScar(String scarUri, String scarSegUri) {
         Scar scar = new Scar();
-        scar.scar_url = scar_url;
-        scar.scar_seg_url = scar_seg_url;
+        scar.scarUri = scarUri;
+        scar.scarSegUri = scarSegUri;
         return scar;
     }
 }
