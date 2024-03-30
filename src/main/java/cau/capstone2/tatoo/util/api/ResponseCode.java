@@ -23,6 +23,7 @@ public enum ResponseCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
 
     // 200 OK
+    USER_LOGIN_SUCCESS(HttpStatus.OK, true, "사용자 로그인 성공"),
     USER_READ_SUCCESS(HttpStatus.OK, true, "사용자 조회 성공"),
     USER_UPDATE_SUCCESS(HttpStatus.OK, true, "사용자 수정 성공"),
     USER_DELETE_SUCCESS(HttpStatus.OK, true, "사용자 삭제 성공"),
