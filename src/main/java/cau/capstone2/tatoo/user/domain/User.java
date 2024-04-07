@@ -37,7 +37,7 @@ public class User implements UserDetails {
         return user;
     }
 
-    public void updateUserState() {
+    public void setUserState() {
         this.isUsed = true;
     }
 
