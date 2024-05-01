@@ -1,4 +1,4 @@
-package cau.capstone2.tatoo.tatoo.domain;
+package cau.capstone2.tatoo.tattoo.domain;
 
 import cau.capstone2.tatoo.scar.domain.Scar;
 import jakarta.persistence.*;
@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Tatoo {
+public class Tattoo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tatoo_id")
+    @Column(name = "tattoo_id")
     private Long id;
 
     private boolean isFinished = false;
