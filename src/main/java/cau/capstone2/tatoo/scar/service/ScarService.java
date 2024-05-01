@@ -17,7 +17,7 @@ public class ScarService {
     private ScarRepository scarRepository;
 
     @Transactional
-    public void requestTatoo(RequestScarDto requestScarDto, Long userId, MultipartFile scarImage) {
+    public void requestTattoo(RequestScarDto requestScarDto, Long userId, MultipartFile scarImage) {
 
         //Scar 정보 저장
         Scar scar = Scar.createScar(requestScarDto.getStyleDescription(), requestScarDto.getStyleKeyWord());
