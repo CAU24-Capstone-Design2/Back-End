@@ -28,6 +28,7 @@ public enum ResponseCode {
     USER_UPDATE_SUCCESS(HttpStatus.OK, true, "사용자 수정 성공"),
     USER_DELETE_SUCCESS(HttpStatus.OK, true, "사용자 삭제 성공"),
     USER_STATE_SUCCESS(HttpStatus.OK, true, "사용자의 타투 학습 여부 확인 성공"),
+    USER_TATTOO_REQUEST_SUCCESS(HttpStatus.OK, true, "사용자의 타투 학습 요청 성공"),
 
     // 201 Created
     USER_CREATE_SUCCESS(HttpStatus.CREATED, true, "사용자 생성 성공");
