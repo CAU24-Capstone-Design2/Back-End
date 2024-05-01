@@ -7,11 +7,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Scar {
@@ -24,6 +26,10 @@ public class Scar {
 
     private String scarSegUri;
 
+    private String scarKeyWord;
+
+    private String scarDescription;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -31,10 +37,10 @@ public class Scar {
     @OneToMany(mappedBy = "scar", cascade = CascadeType.REMOVE)
     private List<Tatoo> tatooList = new ArrayList<>();
 
-    public static Scar createScar(String scarUri, String scarSegUri) {
+    public static Scar createScar(String scarDescription, String scarKeyWord) {
         Scar scar = new Scar();
-        scar.scarUri = scarUri;
-        scar.scarSegUri = scarSegUri;
+        scar.scarDescription = scarDescription;
+        scar.scarKeyWord = scarKeyWord;
         return scar;
     }
 }
