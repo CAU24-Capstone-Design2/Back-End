@@ -1,7 +1,7 @@
 package cau.capstone2.tatoo.scar.domain;
 
 
-import cau.capstone2.tatoo.tattoo.domain.Tatoo;
+import cau.capstone2.tatoo.tattoo.domain.Tattoo;
 import cau.capstone2.tatoo.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,9 +22,13 @@ public class Scar {
     @Column(name = "scar_id")
     private Long id;
 
-    private String scarUri;
+    private String scarUri; //scar image filePath
 
-    private String scarSegUri;
+    private String scarSegUri; //scar segmentation image filePath
+
+    private String scarImage; //s3 - scarImage
+
+    private String scarSegImage; //s3 - scarSegImage
 
     private String scarKeyWord;
 
@@ -35,7 +39,7 @@ public class Scar {
     private User user;
 
     @OneToMany(mappedBy = "scar", cascade = CascadeType.REMOVE)
-    private List<Tatoo> tatooList = new ArrayList<>();
+    private List<Tattoo> tatooList = new ArrayList<>();
 
     public static Scar createScar(String scarDescription, String scarKeyWord) {
         Scar scar = new Scar();

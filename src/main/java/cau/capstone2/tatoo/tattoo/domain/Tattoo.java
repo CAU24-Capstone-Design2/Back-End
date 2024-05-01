@@ -18,10 +18,12 @@ public class Tattoo {
     private boolean isFinished = false;
 
     //AI 도안
-    private String designUri;
+    private String designUri; //tattoo design image filePath
 
-    //피부 tryon
+    //피부 try-on
     private String outputUri;
+
+    private String tattooImage; //s3 - tattoo image
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scar_id")
