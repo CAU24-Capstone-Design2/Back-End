@@ -37,10 +37,6 @@ public class User implements UserDetails {
         return user;
     }
 
-    public void setUserState() {
-        this.isUsed = true;
-    }
-
     //Jwt 설정을 위한 UserDetails 메소드
     @ElementCollection(fetch = FetchType.EAGER) //roles 컬렉션
     private List<String> roles = new ArrayList<>();
