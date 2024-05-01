@@ -1,7 +1,7 @@
 package cau.capstone2.tatoo.scar.domain;
 
 
-import cau.capstone2.tatoo.tatoo.domain.Tatoo;
+import cau.capstone2.tatoo.tattoo.domain.Tatoo;
 import cau.capstone2.tatoo.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
