@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -44,6 +46,25 @@ public class ScarController {
     public ApiResponse<List<ResponseTattooDto>> getAllTattoo(@RequestHeader String accessToken) {
         Long userId = Long.parseLong(jwtTokenProvider.getUserPk(accessToken));
         return ApiResponse.success(scarService.getUserTattoo(userId), ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
+    }
+
+    //테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트 (multipartfile -> s3)
+    @Operation(summary = "테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트")
+    @PostMapping("/uploadImage")
+    public ApiResponse<String> uploadImage(@ModelAttribute RequestTattooDto dto) throws IOException {
+        log.info(dto.getStyleDescription());
+        String res = scarService.uploadImage(dto.getScarImage());
+        log.info(res);
+        return ApiResponse.success(res, ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
+    }
+
+    //테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트 (file -> s3)
+    @Operation(summary = "테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트")
+    @PostMapping("/uploadImagePath")
+    public ApiResponse<String> uploadFileImage() throws IOException {
+        log.info("경로:");
+        String res = scarService.uploadImageFromFile("/Users/cryptolab/Desktop/tattoo1.jpeg");
+        return ApiResponse.success(res, ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
     }
 
 }
