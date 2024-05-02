@@ -123,7 +123,7 @@ public class ScarService {
         return fileName;
     }
 
-    private String uploadImage(MultipartFile file) throws IOException {
+    public String uploadImage(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID().toString(); // Generate a unique filename
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
