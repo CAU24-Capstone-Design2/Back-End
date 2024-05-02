@@ -2,6 +2,7 @@ package cau.capstone2.tatoo.scar.controller;
 
 import cau.capstone2.tatoo.auth.component.JwtTokenProvider;
 import cau.capstone2.tatoo.s3.dto.RequestTattooDto;
+import cau.capstone2.tatoo.s3.dto.ResponseTattooDesignDto;
 import cau.capstone2.tatoo.s3.dto.ResponseTattooDto;
 import cau.capstone2.tatoo.scar.service.ScarService;
 import cau.capstone2.tatoo.util.api.ApiResponse;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,11 @@ public class ScarController {
     @PostMapping("/requestTattoo")
     public ApiResponse<Void> requestTatoo(@RequestHeader String accessToken, @ModelAttribute RequestTattooDto requestTattooDto) {
         Long userId = Long.parseLong(jwtTokenProvider.getUserPk(accessToken));
-        scarService.requestTattoo(requestTattooDto, userId);
+        try {
+            scarService.requestTattoo(requestTattooDto, userId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return ApiResponse.success(null, ResponseCode.USER_TATTOO_REQUEST_SUCCESS.getMessage());
     }
 
@@ -43,7 +47,7 @@ public class ScarController {
     //유저의 모든 타투 도안 반환
     @Operation(summary = "유저의 모든 타투 도안 반환")
     @GetMapping("/getAllTattoo")
-    public ApiResponse<List<ResponseTattooDto>> getAllTattoo(@RequestHeader String accessToken) {
+    public ApiResponse<List<ResponseTattooDesignDto>> getAllTattoo(@RequestHeader String accessToken) {
         Long userId = Long.parseLong(jwtTokenProvider.getUserPk(accessToken));
         return ApiResponse.success(scarService.getUserTattoo(userId), ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
     }
