@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum ResponseCode {
     // 400 Bad Request
     BAD_REQUEST(HttpStatus.BAD_REQUEST, false, "잘못된 요청입니다."),
+    FILE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, false, "파일 업로드에 실패하였습니다."),
 
     // 401 Unauthorized
 
@@ -18,6 +19,7 @@ public enum ResponseCode {
 
     // 404 Not Found
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "사용자를 찾을 수 없습니다."),
+    SCAR_NOT_FOUND(HttpStatus.NOT_FOUND, false, "흉터 이미지를 찾을 수 없습니다."),
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
@@ -27,6 +29,9 @@ public enum ResponseCode {
     USER_READ_SUCCESS(HttpStatus.OK, true, "사용자 조회 성공"),
     USER_UPDATE_SUCCESS(HttpStatus.OK, true, "사용자 수정 성공"),
     USER_DELETE_SUCCESS(HttpStatus.OK, true, "사용자 삭제 성공"),
+    USER_STATE_SUCCESS(HttpStatus.OK, true, "사용자의 타투 학습 여부 확인 성공"),
+    USER_TATTOO_REQUEST_SUCCESS(HttpStatus.OK, true, "사용자의 타투 학습 요청 성공"),
+    USER_TATTOO_GET_SUCCESS(HttpStatus.OK, true, "사용자의 타투 정보 반환 성공"),
 
     // 201 Created
     USER_CREATE_SUCCESS(HttpStatus.CREATED, true, "사용자 생성 성공");
