@@ -89,11 +89,13 @@ public class ScarService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ResponseTattooDto responseTattoo(Long scarId){
         Scar scar = findScarById(scarId);
         return ResponseTattooDto.of(scar.getScarImage(), scar.getScarSegImage(), scar.getTattooImage());
     }
 
+    @Transactional(readOnly = true)
     public List<ResponseTattooDto> getUserTattoo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ScarException(ResponseCode.USER_NOT_FOUND));
