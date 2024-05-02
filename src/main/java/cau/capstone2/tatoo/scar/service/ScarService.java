@@ -1,6 +1,7 @@
 package cau.capstone2.tatoo.scar.service;
 
 import cau.capstone2.tatoo.s3.dto.RequestTattooDto;
+import cau.capstone2.tatoo.s3.dto.ResponseTattooDesignDto;
 import cau.capstone2.tatoo.s3.dto.ResponseTattooDto;
 import cau.capstone2.tatoo.scar.domain.Scar;
 import cau.capstone2.tatoo.scar.repository.ScarRepository;
@@ -20,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +40,7 @@ public class ScarService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void requestTattoo(RequestTattooDto requestTattooDto, Long userId) {
+    public void requestTattoo(RequestTattooDto requestTattooDto, Long userId) throws IOException {
 
         //Scar 정보 저장
         Scar scar = Scar.createScar(requestTattooDto.getStyleDescription(), requestTattooDto.getStyleKeyWord());
@@ -50,9 +53,9 @@ public class ScarService {
             log.error("이미지 업로드 중 오류 발생");
         }
 
-        String fileName = saveImage(requestTattooDto.getScarImage());
-        String filePath = "준희 저장 경로" + fileName;
-        scar.setScarUri(filePath); //scarImage 디렉토리를 저장
+        //프론트한테 받은 multipartfile_scar를 서버 디렉토리에 저장 후 디렉토리 반환
+        String filePath = saveImage(requestTattooDto.getScarImage());
+        scar.setScarUri(filePath); //scarImage 디렉토리를 디비에 세팅
 
         scarRepository.save(scar);
 
@@ -96,13 +99,13 @@ public class ScarService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseTattooDto> getUserTattoo(Long userId) {
+    public List<ResponseTattooDesignDto> getUserTattoo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ScarException(ResponseCode.USER_NOT_FOUND));
         List<Scar> scars = scarRepository.findAllByUserId(user.getId());
-        List<ResponseTattooDto> userTattoos = new ArrayList<>();
+        List<ResponseTattooDesignDto> userTattoos = new ArrayList<>();
         for(Scar scar : scars) {
-            userTattoos.add(ResponseTattooDto.of(scar.getScarImage(), scar.getScarSegImage(), scar.getTattooImage()));
+            userTattoos.add(ResponseTattooDesignDto.of(scar.getTattooImage()));
         }
         if(scars.isEmpty()) { //타투가 없는 경우
             return List.of();
@@ -111,16 +114,22 @@ public class ScarService {
     }
 
     //서버 디렉토리에 이미지 저장
-    private String saveImage(MultipartFile imageFile) {
-        String fileName = "scar" + imageFile.getOriginalFilename();
-        try {
-            log.info("\n\n파일 저장\n\n");
-            log.info("fileName : " + fileName + "\n\n");
-            imageFile.transferTo(new java.io.File("업로드 디렉토리 설정" + fileName));
-        } catch (Exception e) {
-            throw new ScarException(ResponseCode.FILE_UPLOAD_FAILED);
-        }
-        return fileName;
+    private String saveImage(MultipartFile file) throws IOException {
+
+        String UPLOAD_DIRECTORY = "저장해야될 서버의 경로 설정";
+
+        // 생성할 파일명을 지정합니다.
+        String fileName = "scar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+        // 파일을 저장할 경로를 설정합니다.
+        Path uploadPath = Paths.get(UPLOAD_DIRECTORY + fileName);
+
+        // MultipartFile을 File로 변환하여 저장합니다.
+        File destFile = uploadPath.toFile();
+        file.transferTo(destFile);
+
+        // 저장된 파일의 경로를 반환합니다.
+        return destFile.getAbsolutePath();
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
