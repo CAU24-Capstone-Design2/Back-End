@@ -17,9 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,22 +51,27 @@ public class ScarService {
         try {
             String scarImageUri = uploadImage(requestTattooDto.getScarImage());
             scar.setScarImage(scarImageUri);
+            System.out.println("\n\n***이미지 업로드 성공\n");
         } catch (IOException e) {
-            log.error("이미지 업로드 중 오류 발생");
+            System.out.println("\n\n***이미지 업로드 중 오류 발생\n\n");
+            log.error("\n***이미지 업로드 중 오류 발생\n");
         }
 
         //프론트한테 받은 multipartfile_scar를 서버 디렉토리에 저장 후 디렉토리 반환
-        String filePath = saveImage(requestTattooDto.getScarImage());
+        String filePath = saveImage(requestTattooDto.getScarImage(), userId);
+        System.out.println("\n***파일 경로 : " + filePath);
+        log.info("\n***파일 경로 : " + filePath);
         scar.setScarUri(filePath); //scarImage 디렉토리를 디비에 세팅
 
         scarRepository.save(scar);
 
-        String newDirectoryPath = "/home/cvmlserver11/junhee/scart/images/경로 정확히 설정";
+        String newDirectoryPath = "/home/cvmlserver4/junhee/scart/images";
         // Java(Spring)에서 현재 작업 디렉토리 변경
         System.setProperty("user.dir", newDirectoryPath);
 
         // 현재 작업 디렉토리 확인
         String currentDirectory = System.getProperty("user.dir");
+        System.out.println("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
         log.info("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
 
         String activeCommands = "command 실행 명령어";
@@ -77,7 +84,7 @@ public class ScarService {
 
         //타투 도안을 s3 스토리지에 업로드
         try {
-            String tattooImage = uploadImageFromFile("서버 스토리지 상의 타투 도안 이미지 경로");
+            String tattooImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"tattoos/");
             scar.setTattooImage(tattooImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -85,7 +92,7 @@ public class ScarService {
 
         //segmentation 결과를 s3 스토리지에 업로드
         try {
-            String scarSegImage = uploadImageFromFile("서버 스토리지 상의 segment 이미지 경로");
+            String scarSegImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"masks/");
             scar.setScarSegImage(scarSegImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -114,22 +121,39 @@ public class ScarService {
     }
 
     //서버 디렉토리에 이미지 저장
-    private String saveImage(MultipartFile file) throws IOException {
+    private String saveImage(MultipartFile file, Long userId) throws IOException {
 
-        String UPLOAD_DIRECTORY = "저장해야될 서버의 경로 설정";
+        String UPLOAD_DIRECTORY = "home/cvmlserver4/junhee/scart/images/"+userId+"/inputs";
+
+        // 디렉토리 생성
+        File directory = new File(UPLOAD_DIRECTORY);
+        if (!directory.exists()) {
+            directory.mkdirs(); // 디렉토리 생성
+            System.out.println("디렉토리 생성: " + UPLOAD_DIRECTORY);
+        } else {
+            System.out.println("디렉토리 이미 존재함: " + UPLOAD_DIRECTORY);
+        }
 
         // 생성할 파일명을 지정합니다.
         String fileName = "scar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        System.out.println("\n\n***파일명 : " + fileName);
 
         // 파일을 저장할 경로를 설정합니다.
         Path uploadPath = Paths.get(UPLOAD_DIRECTORY + fileName);
+        System.out.println("\n\n***파일 경로 : " + uploadPath);
 
         // MultipartFile을 File로 변환하여 저장합니다.
-        File destFile = uploadPath.toFile();
-        file.transferTo(destFile);
+//        File destFile = uploadPath.toFile();
+//        file.transferTo(destFile);
+
+        try {
+            FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(uploadPath.toFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // 저장된 파일의 경로를 반환합니다.
-        return destFile.getAbsolutePath();
+        return uploadPath.toString();
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
