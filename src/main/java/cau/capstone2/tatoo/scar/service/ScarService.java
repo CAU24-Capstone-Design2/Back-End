@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +40,6 @@ public class ScarService {
     private final AmazonS3 amazonS3;
     private final ScarRepository scarRepository;
     private final UserRepository userRepository;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 
     @Transactional
     public void requestTattoo(RequestTattooDto requestTattooDto, Long userId) throws IOException {
@@ -61,7 +58,7 @@ public class ScarService {
         }
 
         //프론트한테 받은 multipartfile_scar를 서버 디렉토리에 저장 후 디렉토리 반환
-        String filePath = saveImage(requestTattooDto.getScarImage(), userId);
+        String filePath = saveImage(requestTattooDto.getScarImage(), userId, scar.getId());
         System.out.println("\n***파일 경로 : " + filePath);
         log.info("\n***파일 경로 : " + filePath);
         scar.setScarUri(filePath); //scarImage 디렉토리를 디비에 세팅
@@ -87,7 +84,7 @@ public class ScarService {
 
         //타투 도안을 s3 스토리지에 업로드
         try {
-            String tattooImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"tattoos/");
+            String tattooImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"tattoos/"+scar.getId()+".png");
             scar.setTattooImage(tattooImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -95,7 +92,7 @@ public class ScarService {
 
         //segmentation 결과를 s3 스토리지에 업로드
         try {
-            String scarSegImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"masks/");
+            String scarSegImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"masks/"+scar.getId()+".png");
             scar.setScarSegImage(scarSegImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -122,7 +119,7 @@ public class ScarService {
     }
 
     //서버 디렉토리에 이미지 저장
-    private String saveImage(MultipartFile file, Long userId) throws IOException {
+    private String saveImage(MultipartFile file, Long userId, Long scarId) throws IOException {
 
         String UPLOAD_DIRECTORY = "home/cvmlserver4/junhee/scart/images/"+userId+"/inputs";
 
@@ -135,13 +132,9 @@ public class ScarService {
             System.out.println("디렉토리 이미 존재함: " + UPLOAD_DIRECTORY);
         }
 
-        // 생성할 파일명을 지정합니다. (ex. 240510_img.png)
-        String fileName = dateFormat.format(new Date()) + "_" + file.getOriginalFilename();
-        System.out.println("\n\n***파일명 : " + fileName);
-
         // 파일을 저장할 경로를 설정합니다.
-        Path uploadPath = Paths.get(UPLOAD_DIRECTORY + fileName);
-        System.out.println("\n\n***파일 경로 : " + uploadPath);
+        Path uploadPath = Paths.get(UPLOAD_DIRECTORY + scarId + ".png");
+        System.out.println("\n\n***이미지를 저장한 파일 경로 : " + uploadPath);
 
         try {
             FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(uploadPath.toFile()));
