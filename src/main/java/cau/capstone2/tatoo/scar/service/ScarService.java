@@ -110,14 +110,12 @@ public class ScarService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ScarException(ResponseCode.USER_NOT_FOUND));
         List<Scar> scars = scarRepository.findAllByUserId(user.getId());
-        List<ResponseTattooDesignDto> userTattoos = new ArrayList<>();
-        for(Scar scar : scars) {
-            userTattoos.add(ResponseTattooDesignDto.of(scar.getTattooImage()));
-        }
         if(scars.isEmpty()) { //타투가 없는 경우
             return List.of();
         }
-        return userTattoos;
+        return scars.stream()
+                .map(scar -> ResponseTattooDesignDto.of(scar.getTattooImage(), scar.getId()))
+                .toList();
     }
 
     //서버 디렉토리에 이미지 저장
