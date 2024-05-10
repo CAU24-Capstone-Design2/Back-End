@@ -5,10 +5,12 @@ import lombok.Getter;
 @Getter
 public class ResponseTattooDesignDto {
     private String tattooImage;
+    private Long scarId;
 
-    public static ResponseTattooDesignDto of(String tattooImage) {
+    public static ResponseTattooDesignDto of(String tattooImage, Long scarId) {
         ResponseTattooDesignDto responseTattooDesignDto = new ResponseTattooDesignDto();
         responseTattooDesignDto.tattooImage = tattooImage;
+        responseTattooDesignDto.scarId = scarId;
         return responseTattooDesignDto;
     }
 }
