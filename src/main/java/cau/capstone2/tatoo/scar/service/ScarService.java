@@ -25,7 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +42,7 @@ public class ScarService {
     private final AmazonS3 amazonS3;
     private final ScarRepository scarRepository;
     private final UserRepository userRepository;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 
     @Transactional
     public void requestTattoo(RequestTattooDto requestTattooDto, Long userId) throws IOException {
@@ -132,17 +135,13 @@ public class ScarService {
             System.out.println("디렉토리 이미 존재함: " + UPLOAD_DIRECTORY);
         }
 
-        // 생성할 파일명을 지정합니다.
-        String fileName = "scar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        // 생성할 파일명을 지정합니다. (ex. 240510_img.png)
+        String fileName = dateFormat.format(new Date()) + "_" + file.getOriginalFilename();
         System.out.println("\n\n***파일명 : " + fileName);
 
         // 파일을 저장할 경로를 설정합니다.
         Path uploadPath = Paths.get(UPLOAD_DIRECTORY + fileName);
         System.out.println("\n\n***파일 경로 : " + uploadPath);
-
-        // MultipartFile을 File로 변환하여 저장합니다.
-//        File destFile = uploadPath.toFile();
-//        file.transferTo(destFile);
 
         try {
             FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(uploadPath.toFile()));
