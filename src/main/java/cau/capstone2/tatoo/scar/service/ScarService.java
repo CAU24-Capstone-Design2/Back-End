@@ -45,6 +45,10 @@ public class ScarService {
 
         //Scar 정보 저장
         Scar scar = Scar.createScar(requestTattooDto.getStyleDescription(), requestTattooDto.getStyleKeyWord());
+        scarRepository.save(scar);
+        System.out.println("\n\nKeyWord : " + requestTattooDto.getStyleKeyWord());
+        System.out.println("\n\nDescription : " + requestTattooDto.getStyleDescription());
+        System.out.println("\n\nScar : " + scar.getId());
 
         //scarImage를 aws s3 스토리지에 이미지 저장
         try {
@@ -73,7 +77,7 @@ public class ScarService {
         System.out.println("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
         log.info("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
 
-        String activeCommands = "start.sh "+ userId+ " " +scar.getId()+ ".png "+ "\""+requestTattooDto.getStyleDescription()+"\" "+ "\""+requestTattooDto.getStyleKeyWord()+"\"";
+        String activeCommands = "start.sh user"+ userId+ " scar" +scar.getId()+ ".png "+ "\""+requestTattooDto.getStyleDescription()+"\" "+ "\""+requestTattooDto.getStyleKeyWord()+"\"";
         System.out.println("\n\n실행한 명령어 : " + activeCommands);
         try {
             Runtime.getRuntime().exec(activeCommands);
@@ -84,7 +88,7 @@ public class ScarService {
 
         //타투 도안을 s3 스토리지에 업로드
         try {
-            String tattooImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"tattoos/"+scar.getId()+".png");
+            String tattooImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/user"+userId+"/tattoos/scar"+scar.getId()+".png");
             scar.setTattooImage(tattooImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -92,7 +96,7 @@ public class ScarService {
 
         //segmentation 결과를 s3 스토리지에 업로드
         try {
-            String scarSegImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/"+userId+"masks/"+scar.getId()+".png");
+            String scarSegImage = uploadImageFromFile("/home/cvmlserver4/junhee/scart/images/user"+userId+"/masks/scar"+scar.getId()+".png");
             scar.setScarSegImage(scarSegImage); //s3 경로를 서버 스토리지에 저장
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생");
@@ -121,7 +125,7 @@ public class ScarService {
     //서버 디렉토리에 이미지 저장
     private String saveImage(MultipartFile file, Long userId, Long scarId) throws IOException {
 
-        String UPLOAD_DIRECTORY = "home/cvmlserver4/junhee/scart/images/"+userId+"/inputs";
+        String UPLOAD_DIRECTORY = "home/cvmlserver4/junhee/scart/images/user"+userId+"/inputs";
 
         // 디렉토리 생성
         File directory = new File(UPLOAD_DIRECTORY);
@@ -133,7 +137,7 @@ public class ScarService {
         }
 
         // 파일을 저장할 경로를 설정합니다.
-        Path uploadPath = Paths.get(UPLOAD_DIRECTORY + scarId + ".png");
+        Path uploadPath = Paths.get(UPLOAD_DIRECTORY + "/scar" + scarId + ".png");
         System.out.println("\n\n***이미지를 저장한 파일 경로 : " + uploadPath);
 
         try {
