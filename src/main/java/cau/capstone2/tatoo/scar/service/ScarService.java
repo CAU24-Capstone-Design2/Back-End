@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -74,9 +73,10 @@ public class ScarService {
         System.out.println("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
         log.info("\n\n현재 작업 디렉토리 변경 완료. 현재 작업 디렉토리: " + currentDirectory);
 
-        String activeCommands = "command 실행 명령어";
+        String activeCommands = "start.sh "+ userId+ " " +scar.getId()+ ".png "+ "\""+requestTattooDto.getStyleDescription()+"\" "+ "\""+requestTattooDto.getStyleKeyWord()+"\"";
+        System.out.println("\n\n실행한 명령어 : " + activeCommands);
         try {
-            Process process = Runtime.getRuntime().exec(activeCommands);
+            Runtime.getRuntime().exec(activeCommands);
             log.info("\n\ncommand 실행 완료");
         } catch (Exception e) {
             log.error("\n\ncommand 실행 중 오류 발생");
