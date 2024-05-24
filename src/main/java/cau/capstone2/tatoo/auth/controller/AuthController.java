@@ -26,6 +26,7 @@ public class AuthController {
     public ApiResponse<ResponseJwtDto> authCheck(@RequestHeader String accessToken) {
         Long userId = kakaoAuthService.userLogin(accessToken); // 유저 고유번호 추출
         String userJwt = jwtTokenProvider.createToken(userId.toString());
+        System.out.println("\n\nuserId: " + userId + "\n, userJwt: " + userJwt + "\n\n");
         return ApiResponse.success(ResponseJwtDto.of(userId, userJwt), ResponseCode.USER_LOGIN_SUCCESS.getMessage());
     }
 }

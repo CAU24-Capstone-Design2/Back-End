@@ -55,9 +55,10 @@ public class ScarController {
     //테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트 (multipartfile -> s3)
     @Operation(summary = "테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트")
     @PostMapping("/uploadImage")
-    public ApiResponse<String> uploadImage(@ModelAttribute RequestTattooDto dto) throws IOException {
+    public ApiResponse<String> uploadImage(@ModelAttribute RequestTattooDto dto, @RequestHeader String accessToken) throws IOException {
+        Long userId = Long.parseLong(jwtTokenProvider.getUserPk(accessToken));
         log.info(dto.getStyleDescription());
-        String res = scarService.uploadImage(dto.getScarImage());
+        String res = scarService.uploadImage(dto.getScarImage(), userId, "category");
         log.info(res);
         return ApiResponse.success(res, ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
     }
@@ -65,9 +66,10 @@ public class ScarController {
     //테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트 (file -> s3)
     @Operation(summary = "테스트를 위한 aws s3 스토리지에 이미지 업로드 테스트")
     @PostMapping("/uploadImagePath")
-    public ApiResponse<String> uploadFileImage() throws IOException {
+    public ApiResponse<String> uploadFileImage(@RequestHeader String accessToken) throws IOException {
+        Long userId = Long.parseLong(jwtTokenProvider.getUserPk(accessToken));
         log.info("경로:");
-        String res = scarService.uploadImageFromFile("/Users/cryptolab/Desktop/tattoo1.jpeg");
+        String res = scarService.uploadImageFromFile("/Users/cryptolab/Desktop/tattoo1.jpeg", userId, "category");
         return ApiResponse.success(res, ResponseCode.USER_TATTOO_GET_SUCCESS.getMessage());
     }
 

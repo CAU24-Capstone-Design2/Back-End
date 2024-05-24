@@ -21,6 +21,7 @@ public class UserService {
     public boolean checkTrained(Long userId) {
         User user = getUserById(userId);
         if(user.getScars().isEmpty()) {
+            System.out.println("\n\n유저의 학습이력이 없습니다.\n\n");
             return false;
         }
         return true;
