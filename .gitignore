@@ -38,3 +38,6 @@ out/
 
 ### DB ###
 *.properties
+
+### aws s3 ###
+src/main/java/cau.capstone2.tatoo/s3
