@@ -37,8 +37,9 @@ public class Scar {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public static Scar createScar(String scarDescription, String scarKeyWord) {
+    public static Scar createScar(String scarDescription, String scarKeyWord, User user) {
         Scar scar = new Scar();
+        scar.user = user;
         scar.scarDescription = scarDescription;
         scar.scarKeyWord = scarKeyWord;
         return scar;
@@ -46,10 +47,6 @@ public class Scar {
 
     public void setScarImage(String scarImage) {
         this.scarImage = scarImage;
-    }
-
-    public void setScarUri(String scarUri) {
-        this.scarUri = scarUri;
     }
 
     public void setScarSegImage(String scarSegImage) {
@@ -60,4 +57,14 @@ public class Scar {
         this.tattooImage = tattooImage;
     }
 
+
+    public void setScarUri(String scarUri) {
+        this.scarUri = scarUri;
+    }
+    public void setScarSegUri(String scarSegUri) {
+        this.scarSegUri = scarSegUri;
+    }
+    public void setDesignUri(String designUri) {
+        this.designUri = designUri;
+    }
 }
